@@ -1,0 +1,149 @@
+<!-- forms/qa_list.html -->
+<div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+            <tr>
+                <th class="px-6 py-4 text-left">
+                    <div class="flex items-center space-x-1">
+                        <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">Question</span>
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"/>
+                        </svg>
+                    </div>
+                </th>
+                <th class="px-6 py-4 text-left">
+                    <div class="flex items-center space-x-1">
+                        <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">Answer</span>
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"/>
+                        </svg>
+                    </div>
+                </th>
+                <th class="px-6 py-4 text-left">
+                    <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</span>
+                </th>
+            </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+            {% for qa in qas %}
+            <tr class="hover:bg-gray-50 transition-colors duration-200">
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="text-sm text-gray-900">{{ qa.question|truncatechars:20 }}</span>
+                </td>
+                <td class="px-6 py-4">
+                    <span class="text-sm text-gray-600">{{ qa.answer|truncatechars:40 }}</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center space-x-2">
+                        <a href="{% url 'edit_qa' qa.id %}" 
+                           hx-get="{% url 'edit_qa' qa.id %}" 
+                           hx-target="#qa-list" 
+                           hx-swap="innerHTML"
+                           class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 transition-colors duration-200">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                            Edit
+                        </a>
+                        <form action="{% url 'delete_qa' qa.id %}?page={{ page_obj.number }}&q={{ search_query|urlencode }}" 
+                              method="post" 
+                              style="display:inline;"
+                              hx-delete="{% url 'delete_qa' qa.id %}?page={{ page_obj.number }}&q={{ search_query|urlencode }}" 
+                              hx-target="#qa-list" 
+                              hx-swap="innerHTML"
+                              hx-confirm="Are you sure you want to delete this Q&A?"
+                              hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+                            {% csrf_token %}
+                            <input type="hidden" name="page" value="{{ page_obj.number }}">
+                            <input type="hidden" name="q" value="{{ search_query }}">
+                            <button type="submit" 
+                                    class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 transition-colors duration-200">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3" class="px-6 py-4 text-center text-sm text-gray-500">
+                    No Q&A found.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Pagination -->
+{% if page_obj.has_other_pages %}
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 px-6 py-4 mt-4">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center space-x-2">
+            <span class="text-sm text-gray-700">
+                Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} Q&A
+            </span>
+        </div>
+        <nav class="flex items-center space-x-2">
+            {% if page_obj.has_previous %}
+                <a href="{% url 'dashboard' %}?page={{ page_obj.previous_page_number }}&section=chatbot&q={{ search_query|urlencode }}" 
+                   hx-get="{% url 'dashboard' %}?page={{ page_obj.previous_page_number }}&section=chatbot&q={{ search_query|urlencode }}" 
+                   hx-target="#qa-list" 
+                   hx-swap="innerHTML"
+                   class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors duration-200">
+                    Previous
+                </a>
+            {% else %}
+                <span class="px-3 py-2 text-sm font-medium text-gray-300 bg-gray-100 border border-gray-200 rounded-md cursor-not-allowed">
+                    Previous
+                </span>
+            {% endif %}
+            <div class="flex items-center space-x-1">
+                {% for page in page_obj.paginator.page_range %}
+                    {% if page >= page_obj.number|add:-2 and page <= page_obj.number|add:2 %}
+                        <a href="{% url 'dashboard' %}?page={{ page }}&section=chatbot&q={{ search_query|urlencode }}" 
+                           hx-get="{% url 'dashboard' %}?page={{ page }}&section=chatbot&q={{ search_query|urlencode }}" 
+                           hx-target="#qa-list" 
+                           hx-swap="innerHTML"
+                           class="px-3 py-2 text-sm font-medium {% if page == page_obj.number %}text-blue-600 bg-blue-50 border-blue-500{% else %}text-gray-500 bg-white border-gray-300 hover:bg-gray-50{% endif %} border rounded-md transition-colors duration-200">
+                            {{ page }}
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            {% if page_obj.has_next %}
+                <a href="{% url 'dashboard' %}?page={{ page_obj.next_page_number }}&section=chatbot&q={{ search_query|urlencode }}" 
+                   hx-get="{% url 'dashboard' %}?page={{ page_obj.next_page_number }}&section=chatbot&q={{ search_query|urlencode }}" 
+                   hx-target="#qa-list" 
+                   hx-swap="innerHTML"
+                   class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors duration-200">
+                    Next
+                </a>
+            {% else %}
+                <span class="px-3 py-2 text-sm font-medium text-gray-300 bg-gray-100 border border-gray-200 rounded-md cursor-not-allowed">
+                    Next
+                </span>
+            {% endif %}
+        </nav>
+    </div>
+</div>
+{% endif %}
+
+<script>
+    // Ensure CSRF token is included in HTMX requests
+    document.body.addEventListener('htmx:configRequest', (event) => {
+        event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+        console.log('[DEBUG] HTMX request - Headers:', event.detail.headers);
+        console.log('[DEBUG] HTMX request - URL:', event.detail.path);
+        console.log('[DEBUG] HTMX request - Method:', event.detail.verb);
+    });
+
+    // Debug HTMX response
+    document.body.addEventListener('htmx:afterSwap', (event) => {
+        console.log('[DEBUG] HTMX afterSwap - Target:', event.detail.target.id);
+        console.log('[DEBUG] HTMX afterSwap - Content length:', event.detail.xhr.responseText.length);
+    });
+</script>

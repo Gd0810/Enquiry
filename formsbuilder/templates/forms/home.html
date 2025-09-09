@@ -1,0 +1,190 @@
+{% extends "forms/base.html" %}
+{% load static %}
+{% block title %}Home - Redback Project{% endblock %}
+{% block content %}
+    <main class="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 py-8 lg:py-16">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center min-h-[calc(100vh-200px)]">
+            <!-- Left Content -->
+            <div class="text-white carousel-container">
+                <!-- Slide 1 -->
+                <div class="slide-content active" data-slide="0">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-light mb-4 lg:mb-6 leading-tight tracking-tight">
+                        Redback Academy
+                    </h1>
+                    <h2 class="text-lg md:text-xl lg:text-2xl font-normal mb-4 lg:mb-5 text-white/95">
+                        IT training & placement provider
+                    </h2>
+                    <p class="text-sm md:text-base lg:text-lg leading-relaxed mb-6 lg:mb-8 text-white/90 max-w-md">
+                        To gain IT and technical skills through online and offline training programs.
+                        It offers practical courses, workshops, and internships for career growth.
+                        Learners use it to become industry-ready with placement opportunities.
+                        
+                    </p>
+                    <a href="{% url "department_list" %}" class="inline-block glass-effect text-white px-6 lg:px-7 py-2.5 lg:py-3 rounded-full font-medium text-sm tracking-wide transition-all duration-300 hover:bg-white/20 hover:-translate-y-1">
+                        Make Enquiry
+                    </a>
+                    <a href="https://redbackacademy.com/" class="inline-block glass-effect text-white px-6 lg:px-7 py-2.5 lg:py-3 rounded-full font-medium text-sm tracking-wide transition-all duration-300 hover:bg-white/20 hover:-translate-y-1">
+                        Visit Website
+                    </a>
+                </div>
+
+                <!-- Slide 2 -->
+                <div class="slide-content" data-slide="1">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-light mb-4 lg:mb-6 leading-tight tracking-tight">
+                        Redback Studios
+                    </h1>
+                    <h2 class="text-lg md:text-xl lg:text-2xl font-normal mb-4 lg:mb-5 text-white/95">
+                        Web & digital marketing agency
+                    </h2>
+                    <p class="text-sm md:text-base lg:text-lg leading-relaxed mb-6 lg:mb-8 text-white/90 max-w-md">
+                        To design professional websites and improve digital presence.
+                        It provides services like SEO, hosting, and online marketing.
+                        Businesses use it to reach more customers and grow online.
+                    </p>
+                    <a href="{% url "department_list" %}" class="inline-block glass-effect text-white px-6 lg:px-7 py-2.5 lg:py-3 rounded-full font-medium text-sm tracking-wide transition-all duration-300 hover:bg-white/20 hover:-translate-y-1">
+                        Make Enquiry
+                    </a>
+                    <a href="https://redbackstudios.in/" class="inline-block glass-effect text-white px-6 lg:px-7 py-2.5 lg:py-3 rounded-full font-medium text-sm tracking-wide transition-all duration-300 hover:bg-white/20 hover:-translate-y-1">
+                        Visit Website
+                    </a>
+                </div>
+
+                <!-- Slide 3 -->
+                <div class="slide-content" data-slide="2">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-light mb-4 lg:mb-6 leading-tight tracking-tight">
+                        Redback Systems
+                    </h1>
+                    <h2 class="text-lg md:text-xl lg:text-2xl font-normal mb-4 lg:mb-5 text-white/95">
+                        IT support & security services
+                    </h2>
+                    <p class="text-sm md:text-base lg:text-lg leading-relaxed mb-6 lg:mb-8 text-white/90 max-w-md">
+                        To manage IT infrastructure, networking, and hardware solutions.
+                        It offers system support, CCTV setup, and data recovery services.
+                        Organizations use it to keep their technology running smoothly.
+                    </p>
+                    <a href="{% url "department_list" %}" class="inline-block glass-effect text-white px-6 lg:px-7 py-2.5 lg:py-3 rounded-full font-medium text-sm tracking-wide transition-all duration-300 hover:bg-white/20 hover:-translate-y-1">
+                        Make Enquiry
+                    </a>
+                    <a href="https://redbacksystems.in/" class="inline-block glass-effect text-white px-6 lg:px-7 py-2.5 lg:py-3 rounded-full font-medium text-sm tracking-wide transition-all duration-300 hover:bg-white/20 hover:-translate-y-1">
+                        Visit Website
+                    </a>
+                </div>
+                <div class="slide-content" data-slide="3">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-light mb-4 lg:mb-6 leading-tight tracking-tight">
+                        Redback Security
+                    </h1>
+                    <h2 class="text-lg md:text-xl lg:text-2xl font-normal mb-4 lg:mb-5 text-white/95">
+                        Cybersecurity & incident response
+                    </h2>
+                    <p class="text-sm md:text-base lg:text-lg leading-relaxed mb-6 lg:mb-8 text-white/90 max-w-md">
+                        To protect businesses from cyber threats and online risks.
+                        It provides monitoring, penetration testing, and security solutions.
+                        Companies use it to safeguard data and maintain trust.
+                    </p>
+                    <a href="{% url "department_list" %}" class="inline-block glass-effect text-white px-6 lg:px-7 py-2.5 lg:py-3 rounded-full font-medium text-sm tracking-wide transition-all duration-300 hover:bg-white/20 hover:-translate-y-1">
+                        Make Enquiry
+                    </a>
+                    <a href="https://redbacksecurity.com/" class="inline-block glass-effect text-white px-6 lg:px-7 py-2.5 lg:py-3 rounded-full font-medium text-sm tracking-wide transition-all duration-300 hover:bg-white/20 hover:-translate-y-1">
+                        Visit Website
+                    </a>
+                </div>
+                <div class="slide-content" data-slide="4">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-light mb-4 lg:mb-6 leading-tight tracking-tight">
+                        My Business Filings
+                    </h1>
+                    <h2 class="text-lg md:text-xl lg:text-2xl font-normal mb-4 lg:mb-5 text-white/95">
+                        Business registration & legal filings
+                    </h2>
+                    <p class="text-sm md:text-base lg:text-lg leading-relaxed mb-6 lg:mb-8 text-white/90 max-w-md">
+                       To register companies and simplify legal compliance work.
+                        It handles tax filings, licenses, and trademark registrations.
+                        Startups use it to manage business setup with ease.
+                    </p>
+                    <a href="{% url "department_list" %}" class="inline-block glass-effect text-white px-6 lg:px-7 py-2.5 lg:py-3 rounded-full font-medium text-sm tracking-wide transition-all duration-300 hover:bg-white/20 hover:-translate-y-1">
+                        Make Enquiry
+                    </a>
+                    <a href="https://mybusinessfilings.com/" class="inline-block glass-effect text-white px-6 lg:px-7 py-2.5 lg:py-3 rounded-full font-medium text-sm tracking-wide transition-all duration-300 hover:bg-white/20 hover:-translate-y-1">
+                        Visit Website
+                    </a>
+                </div>
+                <div class="slide-content" data-slide="5">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-light mb-4 lg:mb-6 leading-tight tracking-tight">
+                        Redback Consultancy
+                    </h1>
+                    <h2 class="text-lg md:text-xl lg:text-2xl font-normal mb-4 lg:mb-5 text-white/95">
+                        Multi-disciplinary consulting services
+                    </h2>
+                    <p class="text-sm md:text-base lg:text-lg leading-relaxed mb-6 lg:mb-8 text-white/90 max-w-md">
+                       To get professional guidance in IT, business, and marketing.
+                        It offers advisory services for performance and compliance.
+                        Organizations use it to improve strategy and achieve growth.
+                    </p>
+                    <a href="{% url "department_list" %}" class="inline-block glass-effect text-white px-6 lg:px-7 py-2.5 lg:py-3 rounded-full font-medium text-sm tracking-wide transition-all duration-300 hover:bg-white/20 hover:-translate-y-1">
+                        Make Enquiry
+                    </a>
+                    <a href="https://redbackconsultancy.com/" class="inline-block glass-effect text-white px-6 lg:px-7 py-2.5 lg:py-3 rounded-full font-medium text-sm tracking-wide transition-all duration-300 hover:bg-white/20 hover:-translate-y-1">
+                        Visit Website
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Content - Images -->
+            <div class="relative flex justify-center items-center">
+                <div class="relative w-full max-w-md lg:max-w-lg">
+                    <!-- Slide 1 Image -->
+                    <div class="card-slide active" data-slide="0">
+                        <img src="{% static "images/main/accademy.png" %}" 
+                             alt="Tech Innovation" 
+                             class="w-auto h-auto rounded-2xl  hover-lift">
+                    </div>
+
+                    <!-- Slide 2 Image -->
+                    <div class="card-slide" data-slide="1">
+                        <img src="{% static "images/main/studios.png" %}" 
+                             alt="AI Solutions" 
+                             class="w-auto h-auto rounded-2xl  hover-lift">
+                    </div>
+
+                    <!-- Slide 3 Image -->
+                    <div class="card-slide" data-slide="2">
+                        <img src="{% static "images/main/systems.png" %}" 
+                             alt="Global Network" 
+                             class="w-auto h-auto rounded-2xl hover-lift">
+                    </div>
+                    <div class="card-slide" data-slide="3">
+                        <img src="{% static "images/main/cyber.png" %}" 
+                             alt="Scale Image" 
+                             class="w-auto h-auto rounded-2xl hover-lift">
+                    </div>
+                    <div class="card-slide" data-slide="4">
+                        <img src="{% static "images/main/mybussnes.png" %}" 
+                             alt="Security Image" 
+                             class="w-auto h-auto rounded-2xl hover-lift">
+                    </div>
+                    <div class="card-slide" data-slide="5">
+                        <img src="{% static "images/main/consultency.png" %}" 
+                             alt="Optimization Image" 
+                             class="w-auto h-auto rounded-2xl hover-lift">
+                    </div>
+
+                    <!-- Decorative Elements -->
+                    <div class="absolute -top-4 -right-4 w-8 h-8 bg-yellow-400 rounded-full opacity-70 float1"></div>
+                    <div class="absolute -bottom-2 -left-2 w-6 h-6 bg-blue-400 rotate-45 opacity-60 float2"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Carousel Controls -->
+        <div class="flex justify-center lg:justify-end mt-8 lg:mt-0 lg:absolute lg:right-10 lg:top-1/2 lg:-translate-y-1/2">
+            <div class="flex lg:flex-col space-x-3 lg:space-x-0 lg:space-y-3">
+                <div class="carousel-dot w-3 h-3 rounded-full bg-red-600 cursor-pointer active" data-slide="0"></div>
+                <div class="carousel-dot w-3 h-3 rounded-full bg-red-600/40 cursor-pointer" data-slide="1"></div>
+                <div class="carousel-dot w-3 h-3 rounded-full bg-red-600/40 cursor-pointer" data-slide="2"></div>
+                <div class="carousel-dot w-3 h-3 rounded-full bg-red-600/40 cursor-pointer" data-slide="3"></div>
+                <div class="carousel-dot w-3 h-3 rounded-full bg-red-600/40 cursor-pointer" data-slide="4"></div>
+                <div class="carousel-dot w-3 h-3 rounded-full bg-red-600/40 cursor-pointer" data-slide="5"></div>
+            </div>
+        </div>
+    </main>
+
+{% endblock %}

@@ -1,0 +1,177 @@
+<style>
+  @keyframes slide-bounce-in {
+    0% {
+      transform: translateX(120%) scale(0.8);
+      opacity: 0;
+    }
+    70% {
+      transform: translateX(-5%) scale(1.02);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(0) scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-out {
+    0% {
+      transform: translateX(0) scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(120%) scale(0.8);
+      opacity: 0;
+    }
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% {
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    }
+    50% {
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-3px); }
+  }
+
+  @keyframes progress {
+    from { width: 100%; }
+    to { width: 0%; }
+  }
+
+  .toast-enter {
+    animation: slide-bounce-in 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+  }
+
+  .toast-exit {
+    animation: slide-out 0.4s cubic-bezier(0.4, 0, 1, 1) forwards;
+  }
+
+  .toast-glow {
+    animation: pulse-glow 3s ease-in-out infinite;
+  }
+
+  .toast-float {
+    animation: float 4s ease-in-out infinite;
+  }
+
+  .glass-success {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.8) 0%, rgba(22, 163, 74, 0.9) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+  }
+
+  .glass-error, .glass-danger {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.8) 0%, rgba(220, 38, 38, 0.9) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+  }
+
+  .glass-info {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.8) 0%, rgba(37, 99, 235, 0.9) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+  }
+
+  .glass-warning {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.8) 0%, rgba(217, 119, 6, 0.9) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+  }
+
+  .icon-bounce {
+    animation: float 2s ease-in-out infinite;
+  }
+
+  .progress-bar {
+    animation: progress 4s linear forwards;
+  }
+</style>
+
+{% if messages %}
+<div id="toast-container" class="fixed top-6 right-6 space-y-4 z-50 max-w-sm w-full">
+  {% for message in messages %}
+  <div class="toast-item toast-enter toast-glow toast-float relative overflow-hidden rounded-2xl shadow-2xl
+    {% if message.tags == 'success' %}
+      glass-success
+    {% elif message.tags == 'error' or message.tags == 'danger' %}
+      glass-error
+    {% elif message.tags == 'warning' %}
+      glass-warning
+    {% else %}
+      glass-info
+    {% endif %}
+  ">
+    <!-- Progress bar -->
+    <div class="absolute top-0 left-0 h-1 bg-white bg-opacity-30 progress-bar"></div>
+    
+    <!-- Main content -->
+    <div class="flex items-start p-5 relative z-10">
+      <!-- Icon -->
+      <div class="flex-shrink-0 text-3xl mr-4 icon-bounce">
+        {% if message.tags == 'success' %}
+          🎉
+        {% elif message.tags == 'error' or message.tags == 'danger' %}
+          ⚠️
+        {% elif message.tags == 'warning' %}
+          ⚡
+        {% else %}
+          💡
+        {% endif %}
+      </div>
+      
+      <!-- Content -->
+      <div class="flex-1 min-w-0">
+        <h4 class="text-white font-bold text-lg mb-1">
+          {% if message.tags == 'success' %}
+            Success!
+          {% elif message.tags == 'error' or message.tags == 'danger' %}
+            Error!
+          {% elif message.tags == 'warning' %}
+            Warning!
+          {% else %}
+            Info
+          {% endif %}
+        </h4>
+        <p class="text-white text-sm opacity-90 leading-relaxed">{{ message }}</p>
+      </div>
+      
+      <!-- Close button -->
+      <button onclick="this.closest('.toast-item').classList.add('toast-exit'); setTimeout(() => this.closest('.toast-item').remove(), 400);" 
+              class="ml-3 text-white/90 hover:text-white transition-all duration-300 text-xl font-bold size-8 flex items-center justify-center rounded-full hover:bg-white/20 hover:scale-110 active:scale-95 backdrop-blur-sm border border-white/10 hover:border-white/30">
+        <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    
+    <!-- Decorative elements -->
+    <div class="absolute top-2 right-2 w-2 h-2 bg-white bg-opacity-20 rounded-full"></div>
+    <div class="absolute bottom-2 left-2 w-1 h-1 bg-white bg-opacity-20 rounded-full"></div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const toasts = document.querySelectorAll('.toast-item');
+    toasts.forEach(toast => {
+      setTimeout(() => {
+        toast.classList.add('toast-exit');
+        setTimeout(() => toast.remove(), 400);
+      }, 4000);
+    });
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>

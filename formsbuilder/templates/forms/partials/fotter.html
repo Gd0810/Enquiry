@@ -1,0 +1,392 @@
+{% load static %}
+<!-- Footer -->
+    <footer class="relative z-10 bg-transparent border-t border-white/10 mt-auto">
+        <div class="max-w-7xl mx-auto px-6 lg:px-10 py-6">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <!-- Footer Logo -->
+                <div>
+                     <img src="{% static "images/risc.png" %}" alt="Inquiry Logo" class="h-10 w-30 opacity-90">
+                </div>
+
+                <!-- Footer Navigation -->
+                <div class="flex flex-wrap justify-center gap-4 md:gap-8">
+                    <a href="{% url "home" %}" class="text-white/80 hover:text-white font-medium text-sm tracking-wider transition-all duration-300 hover:-translate-y-0.5">Home</a>
+                    <a href="{% url "department_list" %}" class="text-white/80 hover:text-white font-medium text-sm tracking-wider transition-all duration-300 hover:-translate-y-0.5">Make Enquiries</a>
+                    <a href="{% url "status" %}" class="text-white/80 hover:text-white font-medium text-sm tracking-wider transition-all duration-300 hover:-translate-y-0.5">Check Status</a>
+                </div>
+
+                <!-- Social Links -->
+                <div class="flex items-center space-x-4">
+                    <!-- Twitter/X -->
+ <a href="tel:918189985559" class="w-8 h-8 bg-black/10 backdrop-blur-sm rounded-full flex items-center justify-center text-black/70 hover:text-black hover:bg-white/20 transition-all duration-300 hover:-translate-y-1">
+    <i class="fa-solid fa-phone"></i>
+</a> 
+ <a href="mailto:info@redback.in" class="w-8 h-8 bg-black/10 backdrop-blur-sm rounded-full flex items-center justify-center text-black/70 hover:text-black hover:bg-white/20 transition-all duration-300 hover:-translate-y-1">
+    <i class="fa-solid fa-envelope"></i>
+</a> 
+
+<!-- LinkedIn -->
+<a href="https://www.instagram.com/redbacksolutions" class="w-8 h-8 bg-black/10 backdrop-blur-sm rounded-full flex items-center justify-center text-black/70 hover:text-black hover:bg-white/20 transition-all duration-300 hover:-translate-y-1">
+    <i class="fa-brands fa-square-instagram"></i>
+</a>
+
+<!-- GitHub -->
+<a href="https://www.facebook.com/redback" class="w-8 h-8 bg-black/10 backdrop-blur-sm rounded-full flex items-center justify-center text-black/70 hover:text-black hover:bg-white/20 transition-all duration-300 hover:-translate-y-1">
+    <i class="fa-brands fa-square-facebook"></i>
+</a>
+                </div>
+            </div>
+
+            <!-- Copyright -->
+            <div class="border-t border-white/10 mt-6 pt-4 text-center">
+                <p class="text-white/60 text-sm">
+                 © <span id="year"></span> REDBACK IT SOLUTIONS PRIVATE LIMITED. All rights reserved. | Built with innovation and passion.
+                </p>  
+            </div>
+        </div>
+    </footer>
+
+
+        <script>
+              document.getElementById('year').textContent = new Date().getFullYear();
+        class SmoothCarousel {
+            constructor() {
+                this.currentSlide = 0;
+                this.slides = document.querySelectorAll('.slide-content');
+                this.cardSlides = document.querySelectorAll('.card-slide');
+                this.dots = document.querySelectorAll('.carousel-dot');
+                this.autoPlayInterval = 5000;
+                this.autoPlayTimer = null;
+                this.isTransitioning = false;
+                this.touchStartX = 0;
+                this.touchEndX = 0;
+
+                this.init();
+                this.createParticles();
+            }
+
+            init() {
+                // Initialize dots
+                this.dots.forEach((dot, index) => {
+                    dot.addEventListener('click', () => {
+                        if (!this.isTransitioning && index !== this.currentSlide) {
+                            this.goToSlide(index);
+                            this.resetAutoPlay();
+                        }
+                    });
+                });
+
+                // Touch support
+                const mainContent = document.querySelector('main');
+                mainContent.addEventListener('touchstart', (e) => {
+                    this.touchStartX = e.touches[0].clientX;
+                }, { passive: true });
+
+                mainContent.addEventListener('touchend', (e) => {
+                    this.touchEndX = e.changedTouches[0].clientX;
+                    this.handleSwipe();
+                }, { passive: true });
+
+                // Keyboard navigation
+                document.addEventListener('keydown', (e) => {
+                    if (!this.isTransitioning) {
+                        if (e.key === 'ArrowRight') {
+                            this.nextSlide();
+                            this.resetAutoPlay();
+                        } else if (e.key === 'ArrowLeft') {
+                            this.previousSlide();
+                            this.resetAutoPlay();
+                        }
+                    }
+                });
+
+                // Pause on hover
+                mainContent.addEventListener('mouseenter', () => this.pauseAutoPlay());
+                mainContent.addEventListener('mouseleave', () => this.startAutoPlay());
+
+                // Start autoplay
+                this.startAutoPlay();
+
+                // Handle visibility change
+                document.addEventListener('visibilitychange', () => {
+                    if (document.hidden) {
+                        this.pauseAutoPlay();
+                    } else {
+                        this.startAutoPlay();
+                    }
+                });
+            }
+
+            handleSwipe() {
+                const swipeThreshold = 50;
+                const diff = this.touchStartX - this.touchEndX;
+
+                if (Math.abs(diff) > swipeThreshold && !this.isTransitioning) {
+                    if (diff > 0) {
+                        this.nextSlide();
+                    } else {
+                        this.previousSlide();
+                    }
+                    this.resetAutoPlay();
+                }
+            }
+
+            goToSlide(index) {
+                if (this.isTransitioning || index === this.currentSlide) return;
+
+                this.isTransitioning = true;
+                const direction = index > this.currentSlide ? 'next' : 'prev';
+
+                // Update previous slide
+                this.slides[this.currentSlide].classList.remove('active');
+                this.slides[this.currentSlide].classList.add(direction === 'next' ? 'prev' : 'next');
+                
+                this.cardSlides[this.currentSlide].classList.remove('active');
+                this.cardSlides[this.currentSlide].classList.add(direction === 'next' ? 'prev' : 'next');
+                
+                this.dots[this.currentSlide].classList.remove('active', 'bg-red-600');
+                this.dots[this.currentSlide].classList.add('bg-red-600/40');
+
+                // Update current slide
+                this.currentSlide = index;
+
+                // Add new slide with delay for smooth transition
+                requestAnimationFrame(() => {
+                    this.slides[this.currentSlide].classList.remove('prev', 'next');
+                    this.slides[this.currentSlide].classList.add('active');
+                    
+                    this.cardSlides[this.currentSlide].classList.remove('prev', 'next');
+                    this.cardSlides[this.currentSlide].classList.add('active');
+                    
+                    this.dots[this.currentSlide].classList.add('active', 'bg-red-600');
+                    this.dots[this.currentSlide].classList.remove('bg-red-600/40');
+
+                    // Clean up classes after transition
+                    setTimeout(() => {
+                        this.slides.forEach((slide, idx) => {
+                            if (idx !== this.currentSlide) {
+                                slide.classList.remove('prev', 'next');
+                            }
+                        });
+                        this.cardSlides.forEach((slide, idx) => {
+                            if (idx !== this.currentSlide) {
+                                slide.classList.remove('prev', 'next');
+                            }
+                        });
+                        this.isTransitioning = false;
+                    }, 600);
+                });
+            }
+
+            nextSlide() {
+                const nextIndex = (this.currentSlide + 1) % this.slides.length;
+                this.goToSlide(nextIndex);
+            }
+
+            previousSlide() {
+                const prevIndex = (this.currentSlide - 1 + this.slides.length) % this.slides.length;
+                this.goToSlide(prevIndex);
+            }
+
+            startAutoPlay() {
+                if (!this.autoPlayTimer) {
+                    this.autoPlayTimer = setInterval(() => {
+                        this.nextSlide();
+                    }, this.autoPlayInterval);
+                }
+            }
+
+            pauseAutoPlay() {
+                if (this.autoPlayTimer) {
+                    clearInterval(this.autoPlayTimer);
+                    this.autoPlayTimer = null;
+                }
+            }
+
+            resetAutoPlay() {
+                this.pauseAutoPlay();
+                this.startAutoPlay();
+            }
+
+            createParticles() {
+                const particlesContainer = document.getElementById('particles');
+                const particleCount = window.innerWidth > 768 ? 5 : 3;
+
+                for (let i = 0; i < particleCount; i++) {
+                    setTimeout(() => {
+                        this.createParticle(particlesContainer);
+                    }, i * 1000);
+                }
+
+                setInterval(() => {
+                    if (Math.random() > 0.7) {
+                        this.createParticle(particlesContainer);
+                    }
+                }, 2000);
+            }
+
+            createParticle(container) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.width = Math.random() * 4 + 2 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                
+                container.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                }, 7000);
+            }
+        }
+
+        // Mobile menu toggle
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const bars = hamburger.querySelectorAll('div');
+
+        hamburger.addEventListener('click', () => {
+            const isOpen = !mobileMenu.classList.contains('hidden');
+            
+            if (!isOpen) {
+                mobileMenu.classList.remove('hidden');
+                mobileMenu.classList.add('mobile-menu-enter');
+                
+                // Animate to X
+                bars[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+                bars[1].style.opacity = '0';
+                bars[2].style.transform = 'rotate(-45deg) translate(7px, -6px)';
+            } else {
+                mobileMenu.classList.add('hidden');
+                mobileMenu.classList.remove('mobile-menu-enter');
+                
+                // Animate back to hamburger
+                bars[0].style.transform = 'none';
+                bars[1].style.opacity = '1';
+                bars[2].style.transform = 'none';
+            }
+        });
+
+        // Close mobile menu when clicking links
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                bars[0].style.transform = 'none';
+                bars[1].style.opacity = '1';
+                bars[2].style.transform = 'none';
+            });
+        });
+
+        // Initialize carousel
+                // Initialize carousel
+        document.addEventListener('DOMContentLoaded', () => {
+            new SmoothCarousel();
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const target = document.querySelector(targetId);
+                if (target) {
+                    target.scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Reduced motion support
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        
+        if (prefersReducedMotion.matches) {
+            // Disable animations for users who prefer reduced motion
+            const style = document.createElement('style');
+            style.textContent = `
+                *, *::before, *::after {
+                    animation-duration: 0.01ms !important;
+                    animation-iteration-count: 1 !important;
+                    transition-duration: 0.01ms !important;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // Performance optimization - lazy load images if needed
+        if ('IntersectionObserver' in window) {
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.classList.add('loaded');
+                        observer.unobserve(img);
+                    }
+                });
+            });
+
+            document.querySelectorAll('img').forEach(img => {
+                imageObserver.observe(img);
+            });
+        }
+
+        // Handle window resize
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                // Recalculate any necessary dimensions
+                if (window.innerWidth > 1024) {
+                    // Desktop view adjustments
+                    document.querySelectorAll('.carousel-dot').forEach(dot => {
+                        dot.style.removeProperty('transform');
+                    });
+                }
+            }, 250);
+        });
+
+        // Animation sequence
+       setTimeout(() => {
+            const mailIcon = document.getElementById('mailIcon');
+            const checkmark = document.getElementById('checkmark');
+            
+            // Show mail icon and animate
+            mailIcon.style.opacity = '1';
+            mailIcon.classList.add('mail-animation');
+            
+            // Show checkmark after mail animation
+            setTimeout(() => {
+                checkmark.style.opacity = '1';
+                checkmark.classList.add('fade-in-up');
+            }, 1500);
+            
+        }, 500);
+
+        // Show success content after 3 seconds
+        setTimeout(() => {
+            const mailContainer = document.getElementById('mailContainer');
+            const successContent = document.getElementById('successContent');
+            
+            // Fade out mail animation
+            mailContainer.style.opacity = '0';
+            mailContainer.style.transform = 'translateY(-20px)';
+            mailContainer.style.transition = 'all 0.5s ease-out';
+            
+            // Fade in success content
+            setTimeout(() => {
+                mailContainer.style.display = 'none';
+                successContent.style.opacity = '1';
+                successContent.classList.add('fade-in-up');
+            }, 500);
+            
+        }, 3000);
+
+        // Prevent FOUC (Flash of Unstyled Content)
+        document.documentElement.classList.add('loaded');
+    </script>
+</body>
+</html>

@@ -1,0 +1,594 @@
+{% load static %}
+
+<!-- This is the partial template loaded via HTMX -->
+{% if form_model %}
+    <div class="form-container">
+            <div class="form-header">
+            <div class="form-header-left">
+                <h3>{{ department.name }} - {{ form_model.name }}</h3>
+                {% if form_model.website %}
+                    <a href="{{ form_model.website }}" class="website-link" target="_blank">
+                        <i class="fa fa-external-link-alt"></i>
+                        Visit Website
+                    </a>
+                {% endif %}
+            </div>
+
+            <div class="form-header-right">
+                {% if department.dep_img %}
+                    <img src="{{ department.dep_img.url }}" alt="{{ department.name }} Image" class="department-image" />
+                {% else %}
+                    <img src="{% static 'images/default-department.png' %}" alt="Default Department Image" class="department-image" />
+                {% endif %}
+            </div>
+        </div>
+
+        <form id="enquiry-form" 
+              action="{% url 'submit_enquiry' form_model.id %}" 
+              method="post" 
+              enctype="multipart/form-data" 
+              hx-post="{% url 'submit_enquiry' form_model.id %}" 
+              hx-target="#enquiry-form" 
+              hx-swap="outerHTML"
+              hx-indicator="#form-loading">
+            {% csrf_token %}
+            
+            <!-- Form Loading Indicator -->
+            <div id="form-loading" class="htmx-indicator">
+                <i class="fa fa-spinner"></i>
+                Submitting...
+            </div>
+
+            {% for f in form_model.fields.all %}
+                <div class="input-group {% if f.field_type == 'checkbox' or f.field_type == 'radio' %}input-group-options{% endif %}">
+                    
+                    {% if f.field_type == "text" %}
+                     <label class="field-label">{{ f.label }}{% if f.required %} <span class="required">*</span>{% endif %}</label>
+                        <div class="input-group-icon">
+                            <input type="text" 
+                                   name="{{ f.label }}" 
+                                   placeholder="{{ f.label }}" 
+                                   {% if f.required %}required{% endif %} />
+                            <div class="input-icon">
+                                <i class="fa fa-font"></i>
+                            </div>
+                        </div>
+                        
+                    {% elif f.field_type == "email" %}
+                     <label class="field-label">{{ f.label }}{% if f.required %} <span class="required">*</span>{% endif %}</label>
+                        <div class="input-group-icon">
+                            <input type="email" 
+                                   name="{{ f.label }}" 
+                                   placeholder="{{ f.label }}" 
+                                   {% if f.required %}required{% endif %} />
+                            <div class="input-icon">
+                                <i class="fa fa-envelope"></i>
+                            </div>
+                        </div>
+                        
+                    {% elif f.field_type == "password" %}
+                     <label class="field-label">{{ f.label }}{% if f.required %} <span class="required">*</span>{% endif %}</label>
+                        <div class="input-group-icon">
+                            <input type="password" 
+                                   name="{{ f.label }}" 
+                                   placeholder="{{ f.label }}" 
+                                   {% if f.required %}required{% endif %} />
+                            <div class="input-icon">
+                                <i class="fa fa-key"></i>
+                            </div>
+                        </div>
+                        
+                    {% elif f.field_type == "number" %}
+                     <label class="field-label">{{ f.label }}{% if f.required %} <span class="required">*</span>{% endif %}</label>
+                        <div class="input-group-icon">
+                            <input type="number" 
+                                   name="{{ f.label }}" 
+                                   placeholder="{{ f.label }}" 
+                                   {% if f.required %}required{% endif %} />
+                            <div class="input-icon">
+                                <i class="fa fa-hashtag"></i>
+                            </div>
+                        </div>
+                        
+                    {% elif f.field_type == "tel" %}
+                     <label class="field-label">{{ f.label }}{% if f.required %} <span class="required">*</span>{% endif %}</label>
+                        <div class="input-group-icon">
+                            <input type="tel" 
+                                   name="{{ f.label }}" 
+                                   placeholder="{{ f.label }}" 
+                                   {% if f.required %}required{% endif %} />
+                            <div class="input-icon">
+                                <i class="fa fa-phone"></i>
+                            </div>
+                        </div>
+                        
+                    {% elif f.field_type == "url" %}
+                     <label class="field-label">{{ f.label }}{% if f.required %} <span class="required">*</span>{% endif %}</label>
+                        <div class="input-group-icon">
+                            <input type="url" 
+                                   name="{{ f.label }}" 
+                                   placeholder="{{ f.label }}" 
+                                   {% if f.required %}required{% endif %} />
+                            <div class="input-icon">
+                                <i class="fa fa-link"></i>
+                            </div>
+                        </div>
+                        
+                    {% elif f.field_type == "date" %}
+                        <label class="field-label">{{ f.label }}{% if f.required %} <span class="required">*</span>{% endif %}</label>
+                        <div class="input-group-icon">
+                            <input type="date" 
+                                   name="{{ f.label }}" 
+                                   {% if f.required %}required{% endif %} />
+                            <div class="input-icon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                        </div>
+                        
+                    {% elif f.field_type == "time" %}
+                        <label class="field-label">{{ f.label }}{% if f.required %} <span class="required">*</span>{% endif %}</label>
+                        <div class="input-group-icon">
+                            <input type="time" 
+                                   name="{{ f.label }}" 
+                                   {% if f.required %}required{% endif %} />
+                            <div class="input-icon">
+                                <i class="fa fa-clock"></i>
+                            </div>
+                        </div>
+                        
+                    {% elif f.field_type == "textarea" %}
+                        <label class="field-label">{{ f.label }}{% if f.required %} <span class="required">*</span>{% endif %}</label>
+                        <div class="input-group-icon">
+                            <textarea name="{{ f.label }}" 
+                                      placeholder="{{ f.label }}" 
+                                      rows="4"
+                                      {% if f.required %}required{% endif %}></textarea>
+                            <div class="input-icon">
+                                <i class="fa fa-align-left"></i>
+                            </div>
+                        </div>
+                        
+                    {% elif f.field_type == "select" %}
+                        <label class="field-label">{{ f.label }}{% if f.required %} <span class="required">*</span>{% endif %}</label>
+                        <select name="{{ f.label }}" {% if f.required %}required{% endif %}>
+                            <option value="">Select {{ f.label }}</option>
+                            {% for option in f.option_list %}
+                                <option value="{{ option }}">{{ option }}</option>
+                            {% endfor %}
+                        </select>
+                        
+                    {% elif f.field_type == "radio" %}
+                        <label class="field-label">{{ f.label }}{% if f.required %} <span class="required">*</span>{% endif %}</label>
+                        <div class="radio-group">
+                            {% for option in f.option_list %}
+                                <input id="radio_{{ f.label }}_{{ forloop.counter }}" 
+                                       type="radio" 
+                                       name="{{ f.label }}" 
+                                       value="{{ option }}" 
+                                       {% if f.required %}required{% endif %} />
+                                <label for="radio_{{ f.label }}_{{ forloop.counter }}">
+                                    <i class="fa fa-circle"></i>
+                                    {{ option }}
+                                </label>
+                            {% endfor %}
+                        </div>
+                        
+                    {% elif f.field_type == "checkbox" %}
+                        <label class="field-label">{{ f.label }}{% if f.required %} <span class="required">*</span>{% endif %}</label>
+                        <div class="checkbox-group">
+                            {% for option in f.option_list %}
+                                <input id="checkbox_{{ f.label }}_{{ forloop.counter }}" 
+                                       type="checkbox" 
+                                       name="{{ f.label }}" 
+                                       value="{{ option }}" 
+                                       {% if f.required %}data-required="true"{% endif %} />
+                                <label for="checkbox_{{ f.label }}_{{ forloop.counter }}">
+                                    {{ option }}
+                                </label>
+                            {% endfor %}
+                        </div>
+                        
+                    {% elif f.field_type == "file" %}
+                        <label class="field-label">{{ f.label }}{% if f.required %} <span class="required">*</span>{% endif %}</label>
+                        <div class="input-group-icon">
+                            <input type="file" 
+                                   name="{{ f.label }}" 
+                                   {% if f.required %}required{% endif %} />
+                           
+                        </div>
+                        
+                    {% elif f.field_type == "range" %}
+                        <label class="field-label">{{ f.label }}{% if f.required %} <span class="required">*</span>{% endif %}</label>
+                        <input type="range" 
+                               name="{{ f.label }}" 
+                               class="range-input"
+                               {% if f.required %}required{% endif %} />
+                               
+                    {% elif f.field_type == "color" %}
+                        <label class="field-label">{{ f.label }}{% if f.required %} <span class="required">*</span>{% endif %}</label>
+                        <div class="input-group-icon">
+                            <input type="color" 
+                                   name="{{ f.label }}" 
+                                   {% if f.required %}required{% endif %} />
+                            
+                        </div>
+                        
+                    {% elif f.field_type == "hidden" %}
+                        <input type="hidden" name="{{ f.label }}" />
+                        
+                    {% endif %}
+                </div>
+            {% endfor %}
+            
+            <div class="submit-group">
+                <button type="submit" class="submit-btn">
+                    <i class="fa fa-paper-plane"></i>
+                    Submit Form
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <style>
+        /* Form Container Styles */
+        .form-container {
+            max-width: 100%;
+        }
+
+        .form-header {
+            margin-bottom: 2em;
+            padding-bottom: 1em;
+            border-bottom: 2px solid #f5f5f5;
+        }
+
+        .form-header h3 {
+            color: #e53935;
+            margin: 0 0 0.5em 0;
+            font-size: 1.4em;
+        }
+
+        .website-link {
+            color: #e53935;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: all 0.35s ease-in-out;
+        }
+
+        .website-link:hover {
+            color: #b71c1c;
+        }
+
+        .website-link i {
+            margin-right: 0.3em;
+        }
+
+        /* Field Labels */
+        .field-label {
+            display: block;
+            margin-bottom: 0.5em;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .required {
+            color: #e53935;
+        }
+
+        /* Input Styles */
+
+        input,placeholder {
+             font-family: "Poppins", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        input,
+        select,
+        option value,
+        select {
+            
+            font-size: 14px;
+             font-family: "Poppins", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 1em;
+            line-height: 1.4;
+            background-color: #f9f9f9;
+            border: 1px solid #e5e5e5;
+            border-radius: 3px;
+            transition: all 0.35s ease-in-out;
+            font-size: 14px;
+             font-family: "Poppins", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: 0;
+            border-color: #b71c1c;
+        }
+
+        input:focus + .input-icon i,
+        textarea:focus + .input-icon i {
+            color: #e53935;
+        }
+
+        input:focus + .input-icon:after,
+        textarea:focus + .input-icon:after {
+            border-right-color: #e53935;
+        }
+
+        /* Input Groups */
+        .input-group {
+            margin-bottom: 1.5em;
+            zoom: 1;
+        }
+
+        .input-group:before,
+        .input-group:after {
+            content: "";
+            display: table;
+        }
+
+        .input-group:after {
+            clear: both;
+        }
+
+        .input-group-icon {
+            position: relative;
+        }
+
+        .input-group-icon input,
+        .input-group-icon textarea {
+            padding-left: 4.4em;
+        }
+
+        .input-group-icon .input-icon {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3.4em;
+            height: 3.4em;
+            line-height: 3.4em;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .input-group-icon .input-icon:after {
+            position: absolute;
+            top: 0.6em;
+            bottom: 0.6em;
+            left: 3.4em;
+            display: block;
+            border-right: 1px solid #e5e5e5;
+            content: "";
+            transition: all 0.35s ease-in-out;
+        }
+
+        .input-group-icon .input-icon i {
+            transition: all 0.35s ease-in-out;
+        }
+
+        /* For textarea, adjust icon position */
+        .input-group-icon textarea + .input-icon {
+            height: auto;
+            line-height: 1;
+            padding-top: 1em;
+        }
+
+        /* Radio and Checkbox Styles */
+        input[type="radio"],
+        input[type="checkbox"] {
+            display: none;
+        }
+
+        .radio-group,
+        .checkbox-group {
+            margin-top: 0.5em;
+        }
+
+        input[type="radio"] + label,
+        input[type="checkbox"] + label {
+            display: inline-block;
+            padding: 1em;
+            background-color: #f9f9f9;
+            border: 1px solid #e5e5e5;
+            border-radius: 3px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.35s ease-in-out;
+            margin-right: 0.5em;
+            margin-bottom: 0.5em;
+            min-width: 120px;
+        }
+
+        input[type="radio"] + label i {
+            margin-right: 0.4em;
+        }
+
+        input[type="radio"]:checked + label,
+        input[type="checkbox"]:checked + label {
+            background-color: #e53935;
+            color: #fff;
+            border-color: #b71c1c;
+        }
+
+        /* Checkbox specific styles */
+        input[type="checkbox"] + label {
+            position: relative;
+            display: block;
+            padding-left: 2.5em;
+            padding-right: 1em;
+            text-align: left;
+            width: 100%;
+            margin-right: 0;
+        }
+
+        input[type="checkbox"] + label:before {
+            position: absolute;
+            top: 50%;
+            left: 1em;
+            transform: translateY(-50%);
+            display: block;
+            width: 1em;
+            height: 1em;
+            content: "";
+            background: #f9f9f9;
+            border: 1px solid #e5e5e5;
+            border-radius: 3px;
+        }
+
+        input[type="checkbox"] + label:after {
+            position: absolute;
+            top: 50%;
+            left: 1.2em;
+            transform: translateY(-50%);
+            font-size: 0.8em;
+            color: #fff;
+            opacity: 0;
+            font-family: FontAwesome;
+            content: "\f00c";
+        }
+
+        input[type="checkbox"]:checked + label:before {
+            background-color: #e53935;
+            border-color: #b71c1c;
+        }
+
+        input[type="checkbox"]:checked + label:after {
+            opacity: 1;
+        }
+
+        /* Select Styles */
+        select {
+            height: 3.4em;
+            line-height: 2;
+            cursor: pointer;
+        }
+
+        select:focus,
+        select:active {
+            outline: 0;
+        }
+
+        /* Range Input */
+        .range-input {
+            height: 2em;
+            padding: 0;
+            background: transparent;
+            border: none;
+        }
+
+        /* File Input */
+        input[type="file"] {
+            padding: 0.5em;
+        }
+
+        /* Submit Button */
+        .submit-group {
+            margin-top: 2em;
+            text-align: center;
+        }
+
+        .submit-btn {
+            background-color: #e53935;
+            color: #fff;
+            border: 2px solid #b71c1c;
+            padding: 1em 2em;
+            border-radius: 3px;
+            font-size: 1em;
+             font-family: "Poppins", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            cursor: pointer;
+            transition: all 0.35s ease-in-out;
+            min-width: 150px;
+        }
+
+        .submit-btn:hover {
+            background-color: #b71c1c;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .submit-btn i {
+            margin-right: 0.5em;
+        }
+
+        /* Loading indicator for form submission */
+        #form-loading {
+            text-align: center;
+            color: #e53935;
+            margin: 1em 0;
+            font-weight: bold;
+        }
+
+        #form-loading i {
+            animation: spin 1s linear infinite;
+            margin-right: 0.5em;
+        }
+    </style>
+
+    <script>
+        // Handle HTMX response
+        document.getElementById('enquiry-form').addEventListener('htmx:afterRequest', function(event) {
+            if (event.detail.successful) {
+                try {
+                    const response = JSON.parse(event.detail.xhr.responseText);
+                    if (response.success) {
+                        if (response.redirect) {
+                            window.location.href = response.redirect;
+                        } else {
+                            alert('Form submitted successfully!');
+                            document.getElementById('enquiry-form').reset();
+                        }
+                    } else {
+                        alert('Submission failed: ' + JSON.stringify(response.errors || 'Unknown error'));
+                    }
+                } catch (e) {
+                    // If response is not JSON, it might be HTML (success page)
+                    if (event.detail.xhr.status === 200) {
+                        alert('Form submitted successfully!');
+                        document.getElementById('enquiry-form').reset();
+                    } else {
+                        alert('An error occurred while submitting the form.');
+                    }
+                }
+            } else {
+                console.error('HTMX error:', event.detail.xhr.responseText);
+                alert('An error occurred: ' + event.detail.xhr.responseText);
+            }
+        });
+
+        // Client-side validation for required checkboxes
+        document.getElementById('enquiry-form').addEventListener('submit', function(event) {
+            const requiredCheckboxes = document.querySelectorAll('input[data-required="true"]');
+            const checkboxGroups = {};
+            
+            // Group checkboxes by name
+            requiredCheckboxes.forEach(function(checkbox) {
+                const name = checkbox.name;
+                if (!checkboxGroups[name]) {
+                    checkboxGroups[name] = [];
+                }
+                checkboxGroups[name].push(checkbox);
+            });
+            
+            // Check each group
+            for (const name in checkboxGroups) {
+                const checked = checkboxGroups[name].some(cb => cb.checked);
+                if (!checked) {
+                    event.preventDefault();
+                    alert(`Please select at least one option for ${name}`);
+                    return;
+                }
+            }
+        });
+    </script>
+{% else %}
+    <div class="form-placeholder">
+        <i class="fa fa-exclamation-circle"></i>
+        No form found for this department.
+    </div>
+{% endif %}

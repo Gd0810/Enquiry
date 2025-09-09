@@ -1,0 +1,339 @@
+<!-- forms/chatbot.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redback Project</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+</head>
+<body>
+{% if chatbot_is_enabled %}
+<!-- Floating Icon -->
+<button id="chatbot-toggle" class="fixed bottom-6 right-6 z-60 p-4 bg-gradient-to-br from-red-500 to-red-600 text-white rounded-full shadow-2xl transform transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-red-500/25 hover:rotate-3 group" aria-label="Open Chatbot">
+    <svg class="w-7 h-7 transform transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+    </svg>
+    <div class="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full border-2 border-white animate-pulse"></div>
+</button>
+
+<!-- Backdrop -->
+<div id="chatbot-backdrop" class="fixed inset-0 bg-black/20 backdrop-blur-sm z-60 opacity-0 pointer-events-none transition-all duration-300 ease-in-out"></div>
+
+<!-- Chatbot Sidebar -->
+<div id="chatbot-sidebar" class="fixed top-0 right-0 h-full w-80 sm:w-96 bg-gradient-to-br from-red-50 via-white to-red-50 shadow-2xl transform transition-all duration-500 ease-in-out z-60 pointer-events-none translate-x-full border-l border-red-100">
+    <div class="flex flex-col h-full relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-red-200/30 to-transparent rounded-full -translate-y-16 translate-x-16"></div>
+        <div class="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-red-200/20 to-transparent rounded-full translate-y-12 -translate-x-12"></div>
+        
+        <!-- Header -->
+        <div class="p-6 bg-gradient-to-r from-red-500 via-red-600 to-red-700 text-white relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+            <div class="relative flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.9 1 3 1.9 3 3V21C3 22.1 3.9 23 5 23H19C20.1 23 21 22.1 21 21V9H21ZM19 19H5V3H13V9H19V19Z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold">Redbot</h3>
+                        <p class="text-red-100 text-sm">Clear Your Doubts</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button id="reset-chat" class="px-3 py-1.5 bg-white/20 hover:bg-white/30 text-white rounded-lg text-sm font-medium transition-all duration-200 ease-in-out backdrop-blur-sm hover:scale-105 flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                        </svg>
+                        Reset
+                    </button>
+                    <button id="close-chatbot" class="p-1.5 hover:bg-white/20 rounded-lg transition-all duration-200 ease-in-out hover:scale-110">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Area -->
+        <div id="chat-area" class="flex-1 p-4 overflow-y-auto bg-gradient-to-b from-transparent to-red-50/30 relative">
+            <div class="mb-4 animate-fade-in">
+                <div class="bg-gradient-to-r from-red-100 to-red-50 p-4 rounded-2xl border border-red-200/50 shadow-sm relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-red-200/20 to-transparent rounded-full -translate-y-8 translate-x-8"></div>
+                    <div class="relative flex items-start gap-3">
+                        <div class="w-8 h-8 bg-gradient-to-br from-red-400 to-red-500 rounded-full flex items-center justify-center flex-shrink-0">
+                            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12,2A2,2 0 0,1 14,4C14,5.1 13.1,6 12,6C10.9,6 10,5.1 10,4A2,2 0 0,1 12,2ZM10.5,7H13.5C14.06,7 14.5,7.44 14.5,8V8.29C14.5,8.65 14.35,8.96 14.11,9.19L13,10.29V21.5C13,21.78 12.78,22 12.5,22H11.5C11.22,22 11,21.78 11,21.5V10.29L9.89,9.19C9.65,8.96 9.5,8.65 9.5,8.29V8C9.5,7.44 9.94,7 10.5,7Z"/>
+                            </svg>
+                        </div>
+                        <div class="text-gray-700">
+                            Welcome to <span class="font-bold text-red-600">Redbot</span>! 🤖<br>
+                            <span class="text-sm text-gray-600">Any doubt? Clear here by searching for questions.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Suggestions + Search -->
+        <div class="p-4 border-t border-red-200/50 bg-gradient-to-t from-red-50/50 to-transparent backdrop-blur-sm">
+            <div id="suggestion-container" class="mb-4">
+                <div id="random-questions" class="space-y-2">
+                    <div class="text-sm font-medium text-gray-600 mb-2 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"/>
+                        </svg>
+                        Popular Questions
+                    </div>
+                    {% for q in random_questions %}
+                        <div class="transform transition-all duration-200 ease-in-out hover:scale-[1.02]">
+                            <a href="#" class="suggestion-link block p-3 bg-white/70 hover:bg-white hover:shadow-md rounded-xl border border-red-100/50 text-gray-700 hover:text-red-600 transition-all duration-200 ease-in-out group"
+                               data-question="{{ q.question }}"
+                               data-answer="{{ q.answer }}">
+                               <div class="flex items-center gap-2">
+                                   <svg class="w-4 h-4 text-red-400 group-hover:text-red-500 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                   </svg>
+                                   <span class="text-sm">{{ q.question }}</span>
+                               </div>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div id="live-suggestions" class="hidden space-y-2 max-h-40 overflow-y-auto"></div>
+            </div>
+
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </div>
+                <input type="text" id="search-input" placeholder="Type your question..."
+                       class="w-full pl-10 pr-4 py-3 border border-red-200 rounded-xl focus:ring-2 focus:ring-red-300/50 focus:border-red-400 transition-all duration-200 ease-in-out bg-white/80 backdrop-blur-sm hover:bg-white focus:bg-white text-gray-700 placeholder-gray-500"
+                       hx-get="{% url 'search_questions' %}"
+                       hx-include="[name='q']"
+                       hx-trigger="keyup changed delay:500ms"
+                       hx-target="#live-suggestions"
+                       hx-swap="innerHTML">
+                <input type="hidden" name="q" id="query-field">
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+<style>
+    @keyframes fade-in {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .animate-fade-in {
+        animation: fade-in 0.5s ease-in-out;
+    }
+    
+    #chat-area::-webkit-scrollbar, #live-suggestions::-webkit-scrollbar {
+        width: 4px;
+    }
+    
+    #chat-area::-webkit-scrollbar-track, #live-suggestions::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    
+    #chat-area::-webkit-scrollbar-thumb, #live-suggestions::-webkit-scrollbar-thumb {
+        background: rgba(239, 68, 68, 0.3);
+        border-radius: 2px;
+    }
+    
+    #chat-area::-webkit-scrollbar-thumb:hover, #live-suggestions::-webkit-scrollbar-thumb:hover {
+        background: rgba(239, 68, 68, 0.5);
+    }
+</style>
+
+<script>
+   {% if chatbot_is_enabled %}
+    const toggleBtn = document.getElementById('chatbot-toggle');
+    const closeBtn = document.getElementById('close-chatbot');
+    const resetBtn = document.getElementById('reset-chat');
+    const sidebar = document.getElementById('chatbot-sidebar');
+    const backdrop = document.getElementById('chatbot-backdrop');
+    const chatArea = document.getElementById('chat-area');
+    const searchInput = document.getElementById('search-input');
+    const queryField = document.getElementById('query-field');
+    const randomQs = document.getElementById('random-questions');
+    const liveSuggestions = document.getElementById('live-suggestions');
+
+    // Sync input to hidden field + toggle random/suggestions
+    searchInput.addEventListener('input', () => {
+        queryField.value = searchInput.value;
+        if (searchInput.value.trim() === '') {
+            randomQs.classList.remove('hidden');
+            liveSuggestions.classList.add('hidden');
+        } else {
+            randomQs.classList.add('hidden');
+            liveSuggestions.classList.remove('hidden');
+        }
+    });
+
+    // Sidebar toggle with backdrop
+    function openChat() {
+        sidebar.classList.remove('translate-x-full', 'pointer-events-none');
+        backdrop.classList.remove('pointer-events-none');
+        backdrop.classList.remove('opacity-0');
+        document.body.style.overflow = 'hidden';
+        localStorage.setItem('chatbotOpen', 'true');
+        setTimeout(() => {
+            sidebar.classList.add('animate-fade-in');
+        }, 100);
+    }
+    
+    function closeChat() {
+        sidebar.classList.add('translate-x-full', 'pointer-events-none');
+        backdrop.classList.add('pointer-events-none');
+        backdrop.classList.add('opacity-0');
+        document.body.style.overflow = '';
+        localStorage.setItem('chatbotOpen', 'false');
+        sidebar.classList.remove('animate-fade-in');
+    }
+    
+    toggleBtn.addEventListener('click', openChat);
+    closeBtn.addEventListener('click', closeChat);
+    backdrop.addEventListener('click', closeChat);
+
+    // Restore chat state and history on reload
+    window.addEventListener('load', () => {
+        if (localStorage.getItem('chatbotOpen') === 'true') {
+            openChat();
+        } else {
+            closeChat();
+        }
+        const savedHistory = localStorage.getItem('chatHistory');
+        if (savedHistory) {
+            chatArea.innerHTML = savedHistory;
+            // Remove animation classes to prevent re-triggering on refresh
+            chatArea.querySelectorAll('.opacity-0.translate-y-4.scale-95').forEach(el => {
+                el.classList.remove('opacity-0', 'translate-y-4', 'scale-95');
+            });
+            chatArea.querySelectorAll('.typing-indicator').forEach(el => {
+                el.style.display = 'none';
+            });
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+    });
+
+    // Save chat history
+    document.body.addEventListener('htmx:afterSwap', () => {
+        localStorage.setItem('chatHistory', chatArea.innerHTML);
+    });
+
+    // Reset button
+    resetBtn.addEventListener('click', () => {
+        chatArea.style.opacity = '0.5';
+        chatArea.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            chatArea.innerHTML = `
+                <div class="mb-4 animate-fade-in">
+                    <div class="bg-gradient-to-r from-red-100 to-red-50 p-4 rounded-2xl border border-red-200/50 shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-red-200/20 to-transparent rounded-full -translate-y-8 translate-x-8"></div>
+                        <div class="relative flex items-start gap-3">
+                            <div class="w-8 h-8 bg-gradient-to-br from-red-400 to-red-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12,2A2,2 0 0,1 14,4C14,5.1 13.1,6 12,6C10.9,6 10,5.1 10,4A2,2 0 0,1 12,2ZM10.5,7H13.5C14.06,7 14.5,7.44 14.5,8V8.29C14.5,8.65 14.35,8.96 14.11,9.19L13,10.29V21.5C13,21.78 12.78,22 12.5,22H11.5C11.22,22 11,21.78 11,21.5V10.29L9.89,9.19C9.65,8.96 9.5,8.65 9.5,8.29V8C9.5,7.44 9.94,7 10.5,7Z"/>
+                                </svg>
+                            </div>
+                            <div class="text-gray-700">
+                                Welcome to <span class="font-bold text-red-600">Redbot</span>! 🤖<br>
+                                <span class="text-sm text-gray-600">Any doubt? Clear here by searching for questions.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            chatArea.style.opacity = '1';
+            chatArea.style.transform = 'scale(1)';
+            localStorage.removeItem('chatHistory');
+            randomQs.classList.remove('hidden');
+            liveSuggestions.classList.add('hidden');
+        }, 200);
+    });
+
+    // Handle question click with animations
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.suggestion-link')) {
+            e.preventDefault();
+            const link = e.target.closest('.suggestion-link');
+            const question = link.dataset.question;
+            const answer = link.dataset.answer;
+
+            link.style.opacity = '0.6';
+            link.style.pointerEvents = 'none';
+            setTimeout(() => {
+                link.style.opacity = '1';
+                link.style.pointerEvents = '';
+            }, 1500);
+
+            const qDiv = document.createElement('div');
+            qDiv.className = "mb-4 text-right opacity-0 translate-y-4 scale-95 transition-all duration-500 ease-out";
+            qDiv.innerHTML = `
+                <div class="inline-block bg-gradient-to-r from-red-500 to-red-600 text-white p-4 rounded-2xl rounded-tr-md max-w-xs shadow-lg relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+                    <div class="relative">${question}</div>
+                </div>
+            `;
+            chatArea.appendChild(qDiv);
+            setTimeout(() => {
+                qDiv.classList.remove('opacity-0', 'translate-y-4', 'scale-95');
+            }, 50);
+
+            const typingDiv = document.createElement('div');
+            typingDiv.className = "typing-indicator mb-4 opacity-0 transition-opacity duration-300";
+            typingDiv.innerHTML = `
+                <div class="flex items-center gap-2 text-gray-500">
+                    <div class="w-8 h-8 bg-gradient-to-br from-red-400 to-red-500 rounded-full flex items-center justify-center">
+                        <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12,2A2,2 0 0,1 14,4C14,5.1 13.1,6 12,6C10.9,6 10,5.1 10,4A2,2 0 0,1 12,2Z"/>
+                        </svg>
+                    </div>
+                    <div class="flex gap-1">
+                        <div class="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
+                        <div class="w-2 h-2 bg-red-400 rounded-full animate-pulse" style="animation-delay: 0.2s"></div>
+                        <div class="w-2 h-2 bg-red-400 rounded-full animate-pulse" style="animation-delay: 0.4s"></div>
+                    </div>
+                </div>
+            `;
+            chatArea.appendChild(typingDiv);
+            setTimeout(() => typingDiv.classList.remove('opacity-0'), 600);
+
+            setTimeout(() => {
+                chatArea.removeChild(typingDiv);
+                const aDiv = document.createElement('div');
+                aDiv.className = "answer-bubble mb-4 opacity-0 translate-y-4 scale-95 transition-all duration-500 ease-out";
+                aDiv.innerHTML = `
+                    <div class="inline-block bg-white border border-red-100 p-4 rounded-2xl rounded-tl-md max-w-xs shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-12 h-12 bg-gradient-to-bl from-red-100/30 to-transparent rounded-full -translate-y-6 translate-x-6"></div>
+                        <div class="relative text-gray-700">${answer}</div>
+                    </div>
+                `;
+                chatArea.appendChild(aDiv);
+                setTimeout(() => {
+                    aDiv.classList.remove('opacity-0', 'translate-y-4', 'scale-95');
+                }, 50);
+                chatArea.scrollTop = chatArea.scrollHeight;
+                localStorage.setItem('chatHistory', chatArea.innerHTML);
+                searchInput.value = '';
+                randomQs.classList.remove('hidden');
+                liveSuggestions.classList.add('hidden');
+            }, 1500);
+
+            chatArea.scrollTop = chatArea.scrollHeight;
+            localStorage.setItem('chatHistory', chatArea.innerHTML);
+        }
+    });
+    {% endif %}
+</script>
+
+</body>
+</html>

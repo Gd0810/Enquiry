@@ -1,0 +1,155 @@
+{% include "forms/partials/header.html" %}
+ <style>
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes checkmarkDraw {
+            0% { stroke-dasharray: 0 100; }
+            100% { stroke-dasharray: 100 0; }
+        }
+        
+        @keyframes clockTick {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(6deg); }
+            75% { transform: rotate(-6deg); }
+        }
+        
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+        
+        .success-pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        .checkmark-path {
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: checkmarkDraw 1s ease-out 0.5s forwards;
+        }
+        
+        .clock-hand {
+            animation: clockTick 2s ease-in-out infinite;
+            transform-origin: 12px 12px;
+        }
+        
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+        .stagger-4 { animation-delay: 0.4s; }
+    </style>
+</head>
+<body>
+    <div class="relative z-10 min-h-[70vh] px-4 py-8">
+        <div class="flex justify-center items-center min-h-[70vh]">
+            <div class="w-full max-w-lg mx-auto text-center bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-white/20">
+                
+                <!-- Success Icon with Clock -->
+                <div class="relative mx-auto w-24 h-24 mb-6 fade-in-up">
+                    <!-- Main Success Circle -->
+                    <div class="w-24 h-24 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center success-pulse">
+                        <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path class="checkmark-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                    
+                    <!-- Pending Clock Icon -->
+                    <div class="absolute -bottom-2 -right-2 w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center border-4 border-white shadow-lg">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path class="clock-hand" d="M12 6v6l4 2"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Main Title -->
+                <h1 class="text-3xl font-bold text-gray-800 mb-6 bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent fade-in-up stagger-1">
+                    Registration Successful!
+                </h1>
+
+                <!-- Status Messages -->
+                <div class="space-y-4 text-gray-600 mb-8">
+                    <!-- Success Message -->
+                    <div class="bg-green-50 border-l-4 border-green-400 p-4 rounded-r-lg fade-in-up stagger-2">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-green-400 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <p class="text-green-800 font-medium">
+                                Your registration is complete successfully!
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Pending Approval Message -->
+                    <div class="bg-orange-50 border-l-4 border-orange-400 p-4 rounded-r-lg fade-in-up stagger-3">
+                        <div class="flex items-start">
+                            <svg class="w-5 h-5 text-orange-400 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                            </svg>
+                            <div>
+                                <p class="text-orange-800 font-medium mb-1">Waiting for Admin Approval</p>
+                                <p class="text-orange-700 text-sm">You must wait for superadmin approval to access your department dashboard.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Email Notification -->
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg fade-in-up stagger-4">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-blue-400 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                            </svg>
+                            <p class="text-blue-800 font-medium">
+                                📧 You will receive an email notification once approved.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Next Steps Section -->
+                <div class="bg-gray-50 rounded-xl p-6 mb-8 fade-in-up stagger-4">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                        <svg class="w-5 h-5 text-gray-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        What happens next?
+                    </h3>
+                    <ul class="text-left text-gray-600 space-y-2 text-sm">
+                        <li class="flex items-start">
+                            <span class="text-orange-500 mr-2 mt-1">•</span>
+                            <span>Super admin will review your registration request</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-orange-500 mr-2 mt-1">•</span>
+                            <span>You'll receive an email notification upon approval</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-orange-500 mr-2 mt-1">•</span>
+                            <span>Once approved, you can access your department dashboard</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Action Button -->
+                <div class="fade-in-up stagger-4">
+                    <a href="{% url 'home' %}" 
+                       class="inline-flex items-center justify-center w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-3 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                        Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% include "forms/partials/fotter.html" %}

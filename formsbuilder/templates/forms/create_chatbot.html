@@ -1,0 +1,40 @@
+<div class="space-y-6">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <h1 class="text-3xl font-bold text-gray-900">{{ department.name }} - Chatbot Q&A</h1>
+    </div>
+
+    <!-- Create Form -->
+    <div class="bg-white shadow-sm border border-gray-100 rounded-2xl shadow-xl p-6 animate-fade-in">
+        <form id="qa-form" method="post" hx-post="{% url 'dashboard' %}?section=chatbot" hx-target="#qa-list" hx-swap="innerHTML" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                <label for="question" class="block text-sm font-semibold text-slate-700 mb-2">Question</label>
+                <input type="text" name="question" id="question" class="w-full py-2.5 px-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" required>
+            </div>
+            <div>
+                <label for="answer" class="block text-sm font-semibold text-slate-700 mb-2">Answer</label>
+                <textarea name="answer" id="answer" rows="4" class="w-full py-2.5 px-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" required></textarea>
+            </div>
+            <button type="submit" class="w-full md:w-auto flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg transition-all duration-200 shadow hover:shadow-lg">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Add Q&A
+            </button>
+        </form>
+    </div>
+
+    <!-- Q&A List -->
+    <div id="qa-list" class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        {% include 'forms/qa_list.html' %}
+    </div>
+</div>
+
+<script>
+    document.body.addEventListener('htmx:afterSwap', (event) => {
+        if (event.detail.target.id === 'qa-list' && event.detail.requestConfig.verb === 'post') {
+            document.getElementById('question').value = '';
+            document.getElementById('answer').value = '';
+        }
+    });
+</script>

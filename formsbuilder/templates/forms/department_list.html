@@ -1,0 +1,331 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Department Forms</title>
+    <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+    <!-- FontAwesome CDN for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+             font-family: "Poppins", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 15px;
+            color: #b9b9b9;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 2em;
+        }
+
+        *,
+        *:before,
+        *:after {
+            box-sizing: border-box;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2em;
+            min-height: 80vh;
+        }
+
+        /* Department List Styles */
+        .department-section {
+            background-color: #fff;
+            border-radius: 4.2px;
+            {% comment %} box-shadow: 0px 3px 10px -2px rgba(0, 0, 0, 0.2); {% endcomment %}
+            box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+            padding: 1.5em;
+            height: fit-content;
+            position: sticky;
+            top: 2em;
+        }
+
+        .department-section h4 {
+            color: #e53935;
+            margin-top: 0;
+            margin-bottom: 1em;
+            font-size: 1.2em;
+        }
+
+        .department-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .department-item {
+            margin-bottom: 0.5em;
+        }
+
+        .department-link {
+            display: block;
+            padding: 1em;
+            background-color: #f9f9f9;
+            border: 1px solid #e5e5e5;
+            border-radius: 3px;
+            text-decoration: none;
+            color: #b9b9b9;
+            transition: all 0.35s ease-in-out;
+            position: relative;
+            padding-left: 3.5em;
+        }
+
+        .department-link:before {
+            content: "\f0e8";
+            font-family: FontAwesome;
+            position: absolute;
+            left: 1em;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #e5e5e5;
+            transition: all 0.35s ease-in-out;
+        }
+
+        .department-link:hover,
+        .department-link.active {
+            background-color: #e53935;
+            color: #fff;
+            border-color: #b71c1c;
+        }
+
+        .department-link:hover:before,
+        .department-link.active:before {
+            color: #fff;
+        }
+
+        .department-empty {
+            padding: 1em;
+            text-align: center;
+            color: #999;
+            font-style: italic;
+            }
+            .form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2em;
+            padding-bottom: 1em;
+            border-bottom: 2px solid #f5f5f5;
+        }
+
+        .form-header-left {
+            flex: 1;
+        }
+
+        .form-header-right {
+            flex-shrink: 0;
+        }
+
+        .department-image {
+            max-height: 150px;
+            max-width: 200px;
+            border-radius: 5px;
+            object-fit: contain;
+            position:relative;
+            bottom:40px;
+        }
+
+       .department-list .back-home .department-link {
+            margin-top: 1em;
+            background-color: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #b9b9b9;
+            padding: 0.75em 1em 0.75em 3.5em;
+            display: block;
+            border-radius: 6px;
+            position: relative;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .department-list .back-home .department-link:before {
+            content: "\f015"; /* FontAwesome arrow-left icon */
+            font-family: FontAwesome;
+            position: absolute;
+            left: 1em;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.5);
+            transition: all 0.35s ease-in-out;
+        }
+
+        .department-list .back-home .department-link:hover,
+        .department-list .back-home .department-link.active {
+            background-color: #e53935;
+            color: #fff;
+            border-color: #b71c1c;
+        }
+
+        .department-list .back-home .department-link:hover:before,
+        .department-list .back-home .department-link.active:before {
+            color: #fff;
+        }
+
+
+
+        
+        /* Form Section Styles */
+        .form-section {
+            background-color: #fff;
+            border-radius: 4.2px;
+              box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+            padding: 2em;
+            min-height: 400px;
+        }
+
+        .form-section h4 {
+            color: #e53935;
+            margin-top: 0;
+            margin-bottom: 1.5em;
+            font-size: 1.3em;
+        }
+
+        .form-placeholder {
+            text-align: center;
+            color: #999;
+            font-style: italic;
+            margin-top: 3em;
+        }
+
+        .form-placeholder i {
+            font-size: 3em;
+            margin-bottom: 1em;
+            display: block;
+            color: #e5e5e5;
+        }
+
+        /* Loading indicator */
+        .htmx-indicator {
+            display: none;
+        }
+
+        .htmx-request .htmx-indicator {
+            display: block;
+            text-align: center;
+            color: #e53935;
+            margin: 2em 0;
+        }
+
+        .htmx-request .htmx-indicator i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media only screen and (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                gap: 1em;
+                padding: 1em;
+            }
+              .department-image {
+                position: static;
+                display: block;
+                margin: 0 auto 1em;
+                max-width: 120px;
+            }
+
+            .department-section {
+                position: static;
+                order: 2;
+            }
+
+            .form-section {
+                order: 1;
+            }
+
+            body {
+                padding: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+    <!-- Left Side Departments -->
+    <div class="department-section">
+        <h4><i class="fa fa-building"></i> Departments</h4>
+        <ul class="department-list">
+            {% for dept in departments %}
+            <li class="department-item">
+                <a href="#"
+                   class="department-link"
+                   hx-get="{% url 'load_department_form' dept.id %}"
+                   hx-target="#form-fields"
+                   hx-swap="innerHTML"
+                   hx-indicator="#loading-indicator"
+                   onclick="setActiveLink(this)">
+                   {{ dept.name }}
+                </a>
+            </li>
+            {% empty %}
+            <li class="department-item">
+                <i class="fa fa-info-circle"></i>
+                No departments available.
+            </li>
+            {% endfor %}
+            <hr>
+            <li class="department-item back-home">
+                    <a href="{% url 'home' %}" class="department-link">
+                        <i class="fa fa-arrow-left"></i> Back to Home
+                    </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Right Side Form Fields -->
+    <div class="form-section">
+        <h4><i class="fa-solid fa-list-check"></i> Department Form</h4>
+        
+        <!-- Loading indicator -->
+        <div id="loading-indicator" class="htmx-indicator">
+            <i class="fa fa-spinner"></i>
+            Loading form...
+        </div>
+        
+        <div id="form-fields">
+            <div class="form-placeholder">
+                <i class="fa fa-hand-pointer"></i>
+                Select a department from the left to view its form.
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script>
+        // Function to handle active link state
+        function setActiveLink(clickedLink) {
+            // Remove active class from all links
+            document.querySelectorAll('.department-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            // Add active class to clicked link
+            clickedLink.classList.add('active');
+        }
+
+        // Handle HTMX events
+        document.addEventListener('htmx:beforeRequest', function(event) {
+            console.log('Loading department form...');
+        });
+
+        document.addEventListener('htmx:afterRequest', function(event) {
+            if (!event.detail.successful) {
+                document.getElementById('form-fields').innerHTML = 
+                    '<div class="form-placeholder"><i class="fa fa-exclamation-triangle"></i>Error loading form. Please try again.</div>';
+            }
+        });
+    </script>
+</body>
+</html>
