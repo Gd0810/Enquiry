@@ -24,9 +24,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-yi**@n++ejx_db(*$w=k-#w5iub5!95dm)8_$%0^innuh#6ikm'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ["*"]
+DEBUG = False
+ALLOWED_HOSTS = ["redbackai.com", "www.redbackai.com", "88.222.245.194"]
 
 
 # Application definition
@@ -135,7 +134,6 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
-
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 MEDIA_URL = '/media/'
@@ -159,4 +157,9 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # settings.py
 LOGIN_URL = '/login/'   # your login page path
 LOGOUT_REDIRECT_URL = '/'
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://redbackai.com',
+    'https://www.redbackai.com',
+]
 
